@@ -15,7 +15,7 @@ int convertBinaryToDecimal(string n)
 
   for (int i = n.length() - 1; i >= 0; i--)
   {
-    if (n[i] == '1') decimalValue += base;
+    decimalValue += base * (n[i] - '0');
     base *= 2;
   }
 
