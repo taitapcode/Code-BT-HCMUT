@@ -1,69 +1,133 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Nhập giá trị của dòng điện và bán kính
-R = float(input("Nhập bán kính vòng điện tròn: R(m) = "))
-if R <= 0:
-    raise ValueError("Bán kính phải là số dương.")
+# ==========================================
+# HÀM TÍNH TOÁN TỪ TRƯỜNG BỞI VÒNG DÂY DÒNG ĐIỆN
+# ==========================================
 
-I = float(input("Nhập vào giá trị của dòng điện: I(A) = "))
-if I <= 0:
-    raise ValueError("Dòng điện phải là số dương.")
 
-N = 360  # Số đoạn chia nhỏ của vòng tròn
-B = np.array([0.0, 0.0, 0.0])
-MU_0_OVER_4PI = (4 * np.pi * 10**-7) / (4 * np.pi)  # hằng số μ0/4π trong hệ SI
-dtheta = 2 * np.pi / N
+def calc_magnetic_field(R, I, x, y, z, N=360):
+    MU_0 = 4 * np.pi * 1e-7
+    D_THETA = 2 * np.pi / N
+    B = np.array([0.0, 0.0, 0.0])
+    P = np.array([x, y, z])
 
-for i in range(N):
-    theta1 = i * dtheta
-    theta2 = (i + 1) * dtheta
+    for i in range(N):
+        theta1 = i * D_THETA
+        theta2 = (i + 1) * D_THETA
 
-    dlx1 = dlx2 = 0  # Xét trên mặt phẳng Ozy nên x=0
-    dly1 = R * np.cos(theta1)
-    dlz1 = R * np.sin(theta1)
-    dly2 = R * np.cos(theta2)
-    dlz2 = R * np.sin(theta2)
+        # Tọa độ của hai đầu đoạn dl
+        dl1 = np.array([0.0, R * np.cos(theta1), R * np.sin(theta1)])
+        dl2 = np.array([0.0, R * np.cos(theta2), R * np.sin(theta2)])
 
-    dl = np.array([dlx2 - dlx1, dly2 - dly1, dlz2 - dlz1])
-    r = -1 / 2 * np.array([dlx1 + dlx2, dly1 + dly2, dlz1 + dlz2])
+        # Vector dl
+        dl = dl2 - dl1
 
-    # Tính từ trường tại tâm vòng tròn
-    # Vì tại tâm nên r = R
-    B += MU_0_OVER_4PI * (I * np.cross(dl, r) / R**3)
+        # Vị trí trung điểm của đoạn dl
+        mid = (dl1 + dl2) / 2
 
-print("----Kết quả tại tâm vòng tròn----")
-print("Vector từ trường B là: B =", B)
-print("Độ lớn từ trường |B| =", np.linalg.norm(B))
+        # Vector r từ dl đến điểm P
+        r_vec = P - mid
+        r_abs = np.linalg.norm(r_vec)
 
-fig = plt.figure()
-ax = fig.add_subplot(111, projection="3d")
+        # Tích có hướng dl x r
+        cross = np.cross(dl, r_vec)
 
-t = np.linspace(0, 2 * np.pi, N)
-x_circle = 0
-y_circle = R * np.sin(t)
-z_circle = R * np.cos(t)
-ax.plot3D(x_circle, y_circle, z_circle, label="Vòng điện tròn", color="blue")
+        if r_abs > 0:
+            dB = (MU_0 / (4 * np.pi)) * (I * cross) / (r_abs**3)
+            B += dB
 
-# Vẽ vector từ trường tại tâm vòng tròn
-ax.quiver(
-    0,
-    0,
-    0,
-    B[0],
-    B[1],
-    B[2],
-    color="red",
-    label="Vector từ trường B",
+    return B
+
+
+# ==========================================
+# NHẬP THÔNG SỐ
+# ==========================================
+
+
+print("--- TÍNH TỪ TRƯỜNG DO VÒNG DÂY DÒNG ĐIỆN (BIOT-SAVART) ---")
+try:
+    R = float(input("Nhập bán kính vòng dây R (m) [Mặc định: 0.1]: ") or 0.1)
+    I = float(input("Nhập cường độ dòng điện I (A) [Mặc định: 5.0]: ") or 5.0)
+except ValueError:
+    print("Giá trị không hợp lệ. Sử dụng giá trị mặc định R = 0.1m, I = 5.0A.")
+    R, I = 0.1, 5.0
+
+print("\n--- TÍNH TỪ TRƯỜNG TẠI ĐIỂM P(x,y,z) ---")
+try:
+    x = float(input("Nhập tọa độ x (m) [Mặc định: 0.0]: ") or 0.0)
+    y = float(input("Nhập tọa độ y (m) [Mặc định: 0.0]: ") or 0.0)
+    z = float(input("Nhập tọa độ z (m) [Mặc định: 0.0]: ") or 0.0)
+except ValueError:
+    print("Giá trị không hợp lệ. Tính tại gốc tọa độ (0,0,0).")
+    x, y, z = 0.0, 0.0, 0.0
+
+# ==========================================
+# TÍNH TOÁN TỪ TRƯỜNG TẠI ĐIỂM P
+# ==========================================
+
+
+B_p = calc_magnetic_field(R, I, x, y, z)
+B_p_abs = np.linalg.norm(B_p)
+
+print(f"\nTừ trường tại điểm P({x}, {y}, {z}):")
+print(f"Vector B = [{B_p[0]:.4e}, {B_p[1]:.4e}, {B_p[2]:.4e}]")
+print(f"|B| = {B_p_abs:.6e} T")
+
+# ==========================================
+# TÍNH TOÁN TỪ TRƯỜNG TRÊN LƯỚI
+# ==========================================
+
+
+# Tạo lưới tọa độ 2D trên mặt phẳng XY
+grid_size = 20
+limit = 2 * R
+x_val = np.linspace(-limit, limit, grid_size)
+y_val = np.linspace(-limit, limit, grid_size)
+x_grid, y_grid = np.meshgrid(x_val, y_val)
+
+# Khởi tạo các mảng chứa thành phần vector B và |B| tại từng điểm lưới
+B_grid_x = np.zeros_like(x_grid)
+B_grid_y = np.zeros_like(x_grid)
+B_grid_z = np.zeros_like(x_grid)
+B_grid_abs = np.zeros_like(x_grid)
+
+# Tính toán cho từng điểm trên lưới
+for i in range(grid_size):
+    for j in range(grid_size):
+        b_vec = calc_magnetic_field(R, I, x_grid[i, j], y_grid[i, j], 0, N=100)
+        B_grid_x[i, j], B_grid_y[i, j], B_grid_z[i, j] = b_vec
+
+        # Tính độ lớn |B| tại mỗi điểm lưới để dùng cho việc tô màu
+        B_grid_abs[i, j] = np.linalg.norm(b_vec)
+
+
+# ==========================================
+# VẼ ĐỒ THỊ
+# ==========================================
+
+
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111)
+
+# Vẽ các đường sức từ
+strm = ax.streamplot(
+    x_grid, y_grid, B_grid_x, B_grid_y, color=B_grid_abs, cmap="plasma", density=1.5
 )
 
-xlimit = np.linalg.norm(B) * 1.5
-ax.set_xlim([-xlimit, xlimit])
+# Thêm thanh màu chú thích
+cbar = fig.colorbar(strm.lines, ax=ax)
+cbar.set_label("Độ lớn cảm ứng từ |B| (Tesla)")
 
-ax.set_xlabel("X (A)")
-ax.set_ylabel("Y (m)")
-ax.set_zlabel("Z (m)")
-ax.set_title("Từ trường tại tâm vòng điện tròn")
+# Vẽ vị trí dây cắt qua mặt phẳng (tại y = R và y = -R)
+ax.plot([0, 0], [-R, R], "ro", markersize=8, label="Dây dẫn (cắt ngang)")
+
+# Thiết lập tiêu đề và nhãn trục
+ax.set_title("Đường sức từ (Mặt phẳng XY, z=0)")
+ax.set_xlabel("x (m)")
+ax.set_ylabel("y (m)")
 ax.legend()
+ax.grid(True)
 
+plt.tight_layout()
 plt.show()
