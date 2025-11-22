@@ -71,8 +71,8 @@ B_p = calc_magnetic_field(R, I, x, y, z)
 B_p_abs = np.linalg.norm(B_p)
 
 print(f"\nTừ trường tại điểm P({x}, {y}, {z}):")
-print(f"Vector B = [{B_p[0]:.4e}, {B_p[1]:.4e}, {B_p[2]:.4e}]")
-print(f"|B| = {B_p_abs:.6e} T")
+print(f"Vector cảm ứng từ B = [{B_p[0]:.4e}, {B_p[1]:.4e}, {B_p[2]:.4e}]")
+print(f"Độ lớn cảm ứng từ |B| = {B_p_abs:.6e} T")
 
 # ==========================================
 # TÍNH TOÁN TỪ TRƯỜNG TRÊN LƯỚI
