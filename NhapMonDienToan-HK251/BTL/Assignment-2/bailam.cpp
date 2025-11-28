@@ -9,15 +9,16 @@
 #define sp(n) setprecision(n)
 using namespace std;
 
-void lowercase(string &s)
+char lowercase(char c)
 {
-  FE(x, s)
-    if (x >= 'A' && x <= 'Z') x += 32;
+  return (c >= 'A' && c <= 'Z') ? c + 32 : c;
 }
 
 bool isCharInList(char c, string list)
 {
-  return list.find(c) != string::npos;
+  FE(ch, list)
+    if (ch == lowercase(c)) return 1;
+  return 0;
 }
 
 bool isGroupVowel(string s)
@@ -58,19 +59,17 @@ int main()
   getline(cin, word);
 
   int n = (int)word.size();
-  string original = word;
-  lowercase(word);
 
   FE(x, word)
     if (!isValidChar(x))
     {
-      cout << original << " contains invalid characters.";
+      cout << word << " contains invalid characters.";
       return 0;
     }
 
   FO(i, n)
   {
-    char curr = word[i], next = (i + 1 < n) ? word[i + 1] : 0;
+    char curr = lowercase(word[i]), next = (i + 1 < n) ? lowercase(word[i + 1]) : 0;
 
     if (isSpecialChar(curr))
     {
@@ -98,7 +97,6 @@ int main()
       pair += curr;
       if (next) pair += next;
 
-
       if (isGroupVowel(pair))
       {
         if (pair == "ai" || pair == "ae") s = "eye";
@@ -112,7 +110,6 @@ int main()
 
         i++;
         next = (i + 1 < n) ? word[i + 1] : 0;
-
       }
       else
       {
