@@ -112,7 +112,13 @@ ax = fig.add_subplot(111)
 
 # Vẽ các đường sức từ
 strm = ax.streamplot(
-    x_grid, y_grid, B_grid_x, B_grid_y, color=B_grid_abs, cmap="plasma", density=1.5
+    x_grid,
+    y_grid,
+    B_grid_x,
+    B_grid_y,
+    color=B_grid_abs,
+    cmap="plasma",
+    density=abs(I / 5),
 )
 
 # Thêm thanh màu chú thích
@@ -120,7 +126,26 @@ cbar = fig.colorbar(strm.lines, ax=ax)
 cbar.set_label("Độ lớn cảm ứng từ |B| (Tesla)")
 
 # Vẽ vị trí dây cắt qua mặt phẳng (tại y = R và y = -R)
-ax.plot([0, 0], [-R, R], "ro", markersize=8, label="Dây dẫn (cắt ngang)")
+symbol_out = r"$\odot$"
+symbol_in = r"$\otimes$"
+ax.plot(
+    0,
+    R,
+    marker=(symbol_in if I < 0 else symbol_out),
+    color="red",
+    markersize=10,
+    linestyle="None",
+    label=("Dòng điện VÀO" if I < 0 else "Dòng điện RA"),
+)
+ax.plot(
+    0,
+    -R,
+    marker=(symbol_out if I < 0 else symbol_in),
+    color="red",
+    markersize=10,
+    linestyle="None",
+    label=("Dòng điện RA" if I < 0 else "Dòng điện VÀO"),
+)
 
 # Thiết lập tiêu đề và nhãn trục
 ax.set_title("Đường sức từ (Mặt phẳng XY, z=0)")
