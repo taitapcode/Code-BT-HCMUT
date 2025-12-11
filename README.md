@@ -1,6 +1,6 @@
 # HCMUT Coursework Repository
 
-This repository serves as my personal code storage for coursework, assignments, and lab exercises from Ho Chi Minh University of Technology. It is intended to preserve my academic work and may be used by others as a reference for similar assignments or study material.
+This repository serves as my personal code storage for coursework, assignments, and lab exercises during my studies at Ho Chi Minh University of Technology. It is intended to preserve my academic work and may be used by others as a reference for similar assignments or study material.
 
 ## How to Use
 
