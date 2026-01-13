@@ -1,15 +1,14 @@
 # HCMUT Code Archive
 
-This repository serves as my personal code archive for coursework, assignments, and lab exercises during my studies at Ho Chi Minh University of Technology. It is intended to preserve my academic work and may be used by others as a reference for similar assignments or study material.
+Đây là **repository** cá nhân dùng để lưu trữ **source code** các môn học, bài tập lớn và lab trong quá trình học tập tại Trường Đại học Bách khoa - ĐHQG TP.HCM. Mục đích chính là để lưu trữ và cung cấp tài liệu tham khảo cho các bạn sinh viên khóa sau.
 
-## How to Use
+## Một số lưu ý
 
-1. Navigate to the specific course folder based on your needs
-2. Each exercise/assignment is contained in its own file or directory
-3. For major assignments, refer to the PDF specification files for problem details
+- Các tệp tin được sắp xếp theo bài và môn học.
+- Các bài thường đi kèm với đề bài định dạng PDF.
+- Có sẵn các **test cases** cho một số bài tập cụ thể.
 
-## Notes
+## Tuyên bố miễn trừ trách nhiệm
 
-- Exercise files are organized by topic
-- Major assignment folders include problem specifications in PDF format
-- Test cases are provided where applicable
+- Repository này phục vụ mục đích học tập, vui lòng không **copy-paste** trực tiếp cho các bài nộp chính thức.
+- Tất cả các lời giải trong **repo** này chỉ mang tính chất tham khảo. Đây có thể chưa phải là giải pháp tốt nhất hay tối ưu nhất về mặt hiệu suất. Bạn nên tự mình đánh giá và cải tiến mã nguồn để đạt kết quả tốt nhất.
